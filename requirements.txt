@@ -1,0 +1,9 @@
+psutil>=5.9.0
+pynput>=1.7.6
+pywin32>=306
+PyGetWindow>=0.0.9
+pyautogui>=0.9.54
+wmi>=1.5.1
+pyshark>=0.6
+scapy==2.5.0
+nuitka==1.7.5

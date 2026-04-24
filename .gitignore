@@ -1,0 +1,6 @@
+telemetry/
+logs_dir/
+src/__pycache__/
+venv/
+activity_log.csv
+test.py
