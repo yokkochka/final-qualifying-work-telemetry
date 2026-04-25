@@ -1,6 +1,8 @@
 telemetry/
-logs_dir/
+telemetry/logs_dir/
 src/__pycache__/
 venv/
-activity_log.csv
-test.py
+main.build/
+main.dist/
+main.onefile-build/
+telemetry.exe

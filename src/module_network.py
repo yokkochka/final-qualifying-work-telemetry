@@ -38,8 +38,7 @@ def process_packet(pkt, logger):
             "destination": destination,
             "protocol": protocol,
             "info": info,
-            "length": len(pkt),
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "length": len(pkt)
         })
 
     except queue.Full:

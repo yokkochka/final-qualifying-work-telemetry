@@ -93,7 +93,7 @@ def process_loop(stop_event, telemetry_logger, logger):
 
             telemetry_logger.log_event("system_metrics", {
                 "action": "process_list",
-                "processes": [pid for pid, _ in pids]
+                "processes": pids
             })
 
         except Exception as e:
