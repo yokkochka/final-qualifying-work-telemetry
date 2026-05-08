@@ -240,8 +240,11 @@ def start_user_telemetry(stop_event, telemetry_logger, logger):
     threading.Thread(target=move_and_resize, args=(stop_event,telemetry_logger, logger), daemon=True).start()
 
     logger.info(f"файл module_user_activity.py: Сбор телеметрии пользовательской активности запущен...")
-    keyboard_listener.join()
-    mouse_listener.join()
+    
+    while not stop_event.is_set():
+        time.sleep(0.1)
+    keyboard_listener.stop()
+    mouse_listener.stop()
 
 
 

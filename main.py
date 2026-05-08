@@ -9,9 +9,30 @@ from src.module_logger import CSVLogger
 import time
 import threading
 import sys
+import os
 
 IMITATOR_LOGS_DIR = 'logs_dir'
 # IMITATOR_LOGS_DIR = r"C:\Users\yokko\Documents\github\final-qualifying-work-simulator\logs_dir"
+STOP_FILE = "stop.trigger"
+
+def graceful_shutdown(telemetry_logger, logger, stop_event):
+    """Корректное сохранение и выход"""
+    logger.info("main.py: Инициировано аккуратное завершение через стоп-файл.")
+    
+    il.imitator_logs(telemetry_logger, logger, IMITATOR_LOGS_DIR)
+    telemetry_logger.sort_log_file()
+    stop_event.set()
+    
+    if os.path.exists(STOP_FILE):
+        try:
+            os.remove(STOP_FILE)
+            logger.info("main.py: Триггер удален.")
+        except Exception as e:
+            logger.error(f"main.py: Ошибка удаления триггера: {e}")
+            
+    logger.info("main.py: Программа завершена.")
+    time.sleep(1)
+    os._exit(0)
 
 def imit(logger):
     process_list = pm.get_process_list()
@@ -59,6 +80,10 @@ def main():
         while not stop_event.is_set():
             time.sleep(1)
             pid = imit(logger)
+            if os.path.exists(STOP_FILE):
+                logger.info("main.py: Обнаружен сигнал завершения через стоп-файл.")
+                graceful_shutdown(telemetry_logger, logger, stop_event)
+                break
             if pid == False and flag_follow_imitator == '--with-imitator':
                 logger.info("файл main.py: Имитатор завершил работу. Остановка сбора телеметрии...")
                 il.imitator_logs(telemetry_logger, logger, IMITATOR_LOGS_DIR)
@@ -67,9 +92,7 @@ def main():
 
     except KeyboardInterrupt:
         logger.info("файл main.py: Остановка сбора телеметрии (Ctrl+C)...")
-        il.imitator_logs(telemetry_logger, logger, IMITATOR_LOGS_DIR)
-        telemetry_logger.sort_log_file()  
-        stop_event.set()
+        graceful_shutdown(telemetry_logger, logger, stop_event)
 
 
 if __name__ == "__main__":
